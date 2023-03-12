@@ -21,6 +21,28 @@ commands:
             pip install --upgrade pip
             pip install MedRoom.AI.Test==0.0.1
       - run:
+          name: Workaround mount volumes in docker
+          command: |
+            export ENV=local
+            awk '/RUN pip install \.\/wheels\/\*/ { next }1' Dockerfile | \
+            awk '/ADD config\/local\/wheels wheels/ { next }1' | \
+            awk '/WORKDIR/ { next }1' | \
+            awk -v  MedRoom.AI.Test==0.0.1 > DockerFile-aux
+            cat DockerFile-aux
+            cp DockerFile-aux Dockerfile
+            echo "*************"
+            awk '/working_dir/ { print "    working_dir: /home/jovyan/src"; next }1' docker-compose.yml >> docker-compose-aux.yml
+            cp docker-compose-aux.yml docker-compose.yml
+            cat docker-compose.yml
+            echo "*************"
+            rm DockerFile-aux docker-compose-aux.yml
+            echo -e "\ntwine\nholoviews==1.12.5" >> requirements.txt
+            cat requirements.txt
+            echo '' >> .env
+            echo "*************"
+            echo '' >> .env
+            ls            
+      - run:
           name: Building Docker Container
           command: |
             export ENV=test
