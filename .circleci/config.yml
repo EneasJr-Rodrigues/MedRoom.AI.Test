@@ -10,6 +10,12 @@ jobs:
     steps:
       - checkout
       - run:
+          name: "Export Variables from PyPi"
+          command: |
+            config/local/.env
+            export $PYPI_USERNAME
+            export $PYPI_PASSWORD
+      - run:
           name: "Check Environment of Project"
           command: |
             echo $PYPI_USERNAME
