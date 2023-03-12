@@ -2,21 +2,44 @@ version: 2
 orbs:
   python: circleci/python@0.2.1
 jobs:
-  build:
+  build_test:
     docker:
-      - image: cimg/python:3.8     
-    environment:
-      ENV: config/local/.env
+      - image: cimg/python:3.11.0
     steps:
-      - checkout
+      - checkout # checkout source code to working directory
       - run:
-          name: "Check Environment of Project"
-          command: |
-            echo $PYPI_USERNAME
-            echo $PYPI_PASSWORD
+          command: | # create whl and use pipenv to install dependencies
+            python3 setup.py sdist bdist_wheel
+            sudo add-apt-repository universe -y
+            sudo apt-get update
+            sudo apt install -y python3-pip
+            sudo pip install pipenv
+            pipenv install dist/MedRoom.AI.Test-0.0.4-py3-none-any.whl
+            pipenv install pytest
       - run:
-          name: Publishing wheel to PyPi
-          command: |
+          command: | # Run test suite
+            pipenv run pytest
+  test_pypi_publish:
+    docker:
+      - image: cimg/python:3.11.0
+    steps:
+      - checkout # checkout source code to working directory
+      - run:
+          command: | # create whl, install twine and publish to Test PyPI
+            python3 setup.py sdist bdist_wheel
+            sudo add-apt-repository universe -y
+            sudo apt-get update
+            sudo apt install -y python3-pip
+            sudo pip install pipenv
+            pipenv install twine
+            pipenv run twine upload --repository testpypi dist/*
+  pypi_publish:
+    docker:
+      - image: cimg/python:3.11.0
+    steps:
+      - checkout # checkout source code to working directory
+      - run:
+          command: | # create whl, install twine and publish to PyPI
             python3 setup.py sdist bdist_wheel
             sudo add-apt-repository universe -y
             sudo apt-get update
@@ -24,3 +47,21 @@ jobs:
             sudo pip install pipenv
             pipenv install twine
             pipenv run twine upload dist/*
+workflows:
+  build_test_publish:
+    jobs:
+      - build_test
+      - test_pypi_publish:
+          requires:
+            - build_test
+          filters:
+            branches:
+              only:
+                - develop
+      - pypi_publish:
+          requires:
+            - build_test
+          filters:
+            branches:
+              only:
+                - main
