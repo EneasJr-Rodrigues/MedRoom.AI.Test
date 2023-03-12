@@ -19,7 +19,7 @@ commands:
             mkdir /home/circleci/.pip
             pip config list -v
             pip install --upgrade pip
-            pip install dist/MedRoom.AI.Test-0.0.1-py3-none-any.whl
+            pip install MedRoom.AI.Test==0.0.1
       - run:
           name: Building Docker Container
           command: |
