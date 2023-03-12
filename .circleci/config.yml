@@ -28,14 +28,15 @@ commands:
             awk '/RUN pip install \.\/wheels\/\*/ { next }1' Dockerfile | \
             awk '/ADD config\/local\/wheels wheels/ { next }1' | \
             awk '/WORKDIR/ { next }1' | \
-            cat DockerFile-aux
-            cp DockerFile-aux Dockerfile
+            cat /dist/*.whl
+            cat DockerFile
+            cp DockerFile
             echo "*************"
-            awk '/working_dir/ { print "    working_dir: /home/jovyan/src"; next }1' docker-compose.yml >> docker-compose-aux.yml
-            cp docker-compose-aux.yml docker-compose.yml
+            awk '/working_dir/ { print "    working_dir: /home/jovyan/src"; next }1' docker-compose.yml >> docker-compose.yml
+            cp docker-compose.yml
             cat docker-compose.yml
             echo "*************"
-            rm DockerFile-aux docker-compose-aux.yml
+            rm DockerFile docker-compose.yml
             echo -e "\ntwine\nholoviews==1.12.5" >> requirements.txt
             cat requirements.txt
             echo '' >> .env

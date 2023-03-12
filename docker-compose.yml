@@ -22,4 +22,5 @@ services:
       - ./datalake:/datalake
       - ./datalake/scikit_learn_data:/home/jovyan/scikit_learn_data
       - ./config/$ENV:/opt/configs/cluster/
+      - ./dist/*:/opt/dist/
     entrypoint: ./config/$ENV/actions/run.sh
