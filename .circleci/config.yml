@@ -21,25 +21,6 @@ commands:
             mkdir /home/circleci/.pip
             pip config list -v
             pip install --upgrade pip
-
-      - run:
-          name: Install python dependencies
-          command: |
-            sudo apt-get update
-            sudo apt-get install python3-dev gcc g++ -y # python setup.py inst   
-            sudo pip config list -v
-            sudo requirements.txt .
-            sudo pip install -r requirements.txt
-            sudo tests/requirements.txt .
-            sudo pip install -r requirements.txt
-            sudo pip install --upgrade setuptools
-            sudo pip install nltk
-            sudo python -c "import nltk; nltk.download('stopwords')"
-            sudo pip install pytest-   
-            echo 'c.NotebookApp.contents_manager_class = "notedown.NotedownContentsManager"' >> ~/.jupyter/jupyter_notebook_config.py
-            sudo python -m pip install --upgrade jupyterthemes
-            sudo python -m pip install jupyter_contrib_nbextensions
-
       - run:
           name: Building Docker  Container
           command: |
@@ -85,7 +66,7 @@ jobs:
     # The executor is the environment in which the steps below will be executed - below will use a python 3.10.2 container
     # Change the version below to your required version of python
     docker:
-      - image: circleci/python:3.7.6
+      - image: circleci/python:3.8
     steps:
       - run_tests      
     # Checkout the code as the first step. This is a dedicated CircleCI step.
