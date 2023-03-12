@@ -9,7 +9,6 @@ jobs:
           command: | # create whl and use pipenv to install dependencies
             pip config list -v
             pip install --upgrade pip
-            pip install -r requirements.txt
             pip install --upgrade twine
 
             python3 setup.py bdist_wheel
@@ -31,9 +30,8 @@ jobs:
           command: | # create whl, install twine and publish to Test PyPI
             pip config list -v
             pip install --upgrade pip
-            pip install -r requirements.txt
             pip install --upgrade twine
-                      
+
             python3 setup.py bdist_wheel
             sudo add-apt-repository universe -y
             sudo apt-get update
@@ -50,7 +48,6 @@ jobs:
           command: | # create whl, install twine and publish to PyPI
             pip config list -v
             pip install --upgrade pip
-            pip install -r requirements.txt
             pip install --upgrade twine
 
             python3 setup.py bdist_wheel
