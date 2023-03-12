@@ -39,6 +39,13 @@ jobs:
           # This assumes pytest is installed via the install-package step above
           command: pytest
       - run:
+          name: Check pip config
+          command: |
+            pip config list -v
+            mkdir /home/circleci/.pip 
+            pip config list -v
+            pip install --upgrade pip                    
+      - run:
           name: Building Docker Container
           command: |
             export ENV=test
@@ -60,7 +67,7 @@ jobs:
             mkdir coverage
             touch coverage/coverage_docker.xml
             # docker-compose --env-file config/test/.env run --rm med_room tests --cov-report term:skip-covered --junitxml=junit.xml --cov=med_room tests
-            dna start && sleep 10 && docker exec -t med_room-container coverage run --branch --source=med_room -m pytest tests/ --junitxml=junit.xml && \
+            docker exec -t med_room-container coverage run --branch --source=med_room -m pytest tests/ --junitxml=junit.xml && \
             export CONTAINER_NAME=$(docker ps -a --format '{{.Names}}' | grep med_room) && \
             # docker start $CONTAINER_NAME && \
             docker ps -a && \
