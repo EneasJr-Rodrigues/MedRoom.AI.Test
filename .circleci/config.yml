@@ -5,16 +5,13 @@ jobs:
   build:
     docker:
       - image: cimg/python:3.8
+        auth:
+          username: $PYPI_USERNAME
+          password: $PYPI_PASSWORD  # context / project UI env-var reference      
     environment:
       ENV: config/local/.env
     steps:
       - checkout
-      - run:
-          name: "Export Variables from PyPi"
-          command: |
-            config/local/.env
-            export $PYPI_USERNAME
-            export $PYPI_PASSWORD
       - run:
           name: "Check Environment of Project"
           command: |
