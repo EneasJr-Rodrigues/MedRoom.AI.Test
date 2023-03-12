@@ -10,10 +10,11 @@ commands:
     description: setup project and run tests
     steps:
       - setup_remote_docker
+      - checkout
       - run:
           name: Check pip config
           command: |
-            ls
+            print(ls)
             pip config list -v
             mkdir /home/circleci/.pip
             pip config list -v
