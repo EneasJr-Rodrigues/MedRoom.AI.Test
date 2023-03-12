@@ -1,6 +1,5 @@
 
 import re
-import spacy
 import unicodedata
 import nltk
 from nltk.tokenize import word_tokenize

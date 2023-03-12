@@ -17,7 +17,6 @@ pyLDAvis
 pendulum==2.0.5
 kneebow
 
-
 # APIs
 requests==2.26.0
 pygments>=2.7.4 # not directly required, pinned by Snyk to avoid a vulnerability
