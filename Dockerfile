@@ -3,6 +3,9 @@ FROM $base_image
 
 ARG config_path
 
+ARG pypi_user
+ARG pypi_pass
+
 LABEL maintainer="eneas.rodrigues25@gmail.com"
 
 USER $root

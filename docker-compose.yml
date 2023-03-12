@@ -6,6 +6,8 @@ services:
       args:
         config_path: config/$ENV
         base_image: jupyter/pyspark-notebook:python-3.8.8
+        pypi_user: $PYPI_USERNAME
+        pypi_pass: $PYPI_PASSWORD        
     container_name: med_room-container
     user: root
     image: opt/$SERVICE
