@@ -14,9 +14,12 @@ RUN apt-get install python3-dev gcc g++ -y # python setup.py install
 RUN pip config list -v
 ADD requirements.txt .
 RUN pip install -r requirements.txt
+ADD tests/requirements.txt .
+RUN pip install -r requirements.txt
 RUN pip install --upgrade setuptools
 RUN pip install nltk
 RUN python -c "import nltk; nltk.download('stopwords')"
+RUN pip install pytest-cov
 
 RUN echo 'c.NotebookApp.contents_manager_class = "notedown.NotedownContentsManager"' >> ~/.jupyter/jupyter_notebook_config.py
 # NbEtensions
