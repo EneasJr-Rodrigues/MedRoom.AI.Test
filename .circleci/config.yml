@@ -22,28 +22,6 @@ commands:
             pip config list -v
             pip install --upgrade pip
       - run:
-          name: Workaround mount volumes in docker
-          command: |
-            export ENV=local
-            awk '/RUN pip install \.\/wheels\/\*/ { next }1' Dockerfile | \
-            awk '/ADD config\/local\/wheels wheels/ { next }1' | \
-            awk '/WORKDIR/ { next }1' | \
-            cat /dist/*
-            cat DockerFile
-            cp DockerFile
-            echo "*************"
-            awk '/working_dir/ { print "    working_dir: /home/jovyan/src"; next }1' docker-compose.yml >> docker-compose.yml
-            cp docker-compose.yml
-            cat docker-compose.yml
-            echo "*************"
-            rm DockerFile docker-compose.yml
-            echo -e "\ntwine\nholoviews==1.12.5" >> requirements.txt
-            cat requirements.txt
-            echo '' >> .env
-            echo "*************"
-            echo '' >> .env
-            ls                             
-      - run:
           name: Building Docker  Container
           command: |
             export ENV=test
