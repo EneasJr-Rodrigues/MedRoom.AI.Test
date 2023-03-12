@@ -26,4 +26,5 @@ jobs:
             pip install -r requirements.txt
             pip install --upgrade twine
 
-            bash -c "python3 setup.py bdist_wheel && python3 -m twine upload dist/* --username=$PYPI_USERNAME --password="$PYPI_PASSWORD"
+            bash -c "python3 setup.py bdist_wheel && python3 -m twine upload dist/* --username=$PYPI_USERNAME --password="$PYPI_PASSWORD" --verbose"
+            bash echo "Processo Finalizado"
