@@ -21,28 +21,24 @@ commands:
             mkdir /home/circleci/.pip
             pip config list -v
             pip install --upgrade pip
-            
-            apt-get update
-            apt-get install python3-dev gcc g++ -y # python setup.py inst   
-            pip config list -v
-            requirements.txt .
-            pip install -r requirements.txt
-            tests/requirements.txt .
-            pip install -r requirements.txt
-            pip install --upgrade setuptools
-            pip install nltk
-            python -c "import nltk; nltk.download('stopwords')"
-            pip install pytest-   
+
+      - run:
+          name: Install python dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install python3-dev gcc g++ -y # python setup.py inst   
+            sudo pip config list -v
+            sudo requirements.txt .
+            sudo pip install -r requirements.txt
+            sudo tests/requirements.txt .
+            sudo pip install -r requirements.txt
+            sudo pip install --upgrade setuptools
+            sudo pip install nltk
+            sudo python -c "import nltk; nltk.download('stopwords')"
+            sudo pip install pytest-   
             echo 'c.NotebookApp.contents_manager_class = "notedown.NotedownContentsManager"' >> ~/.jupyter/jupyter_notebook_config.py
-            Etensions
-            python -m pip install --upgrade jupyterthemes
-            python -m pip install jupyter_contrib_nbextensions
-            jupyter contrib nbextension install --user
-            jupyter nbextension enable contrib_nbextensions_help_item/main
-            jupyter nbextension enable autosavetime/main
-            jupyter nbextension enable freeze/main
-            jupyter nbextension enable execute_time/ExecuteTime
-            jupyter nbextension enable toc2/main  
+            sudo python -m pip install --upgrade jupyterthemes
+            sudo python -m pip install jupyter_contrib_nbextensions
 
       - run:
           name: Building Docker  Container
