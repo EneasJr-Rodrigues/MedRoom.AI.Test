@@ -1,0 +1,29 @@
+version: 2
+orbs:
+  python: circleci/python@0.2.1
+  gcp-cli: circleci/gcp-cli@2.1.0
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.7.6
+    environment:
+      ENV: config/local/.env
+    steps:
+      - checkout
+      - run:
+          name: "Check Environment of Project"
+          command: |
+            echo $JFROG_USERNAME
+            echo $JFROG_PASSWORD
+      - run:
+          name: Publishing wheel to JFrog
+          command: |
+            set -e
+            mkdir /home/circleci/.pip     
+            export ENV=local
+            echo -e "[global]\index-url = https://$JFROG_USERNAME:$JFROG_PASSWORD@dnaink.jfrog.io/artifactory/api/pypi/dna-ink-pypi/simple" >> /home/circleci/.pip/pip.conf
+            pip config list -v
+            pip install --upgrade pip
+            pip install -r requirements.txt
+            pip install --upgrade twine
+            bash -c "python3 setup.py bdist_wheel && twine upload --username=$JFROG_USERNAME --password="$JFROG_PASSWORD" --repository-url https://dnaink.jfrog.io/artifactory/api/pypi/dna-ink-pypi dist/* --verbose"

@@ -1,20 +1,3 @@
-
-
-# Data Stuff
-gen
-data
-
-config/local/
-
-# Stuff
-.DS_Store
-profile*.html
-
-# IDEs
-.venv
-.idea
-.vscode
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -50,12 +33,14 @@ MANIFEST
 *.manifest
 *.spec
 
+# datalake
+datalake/
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
 
 # Unit test / coverage reports
-tests/resources/.tmp/
 htmlcov/
 .tox/
 .nox/
@@ -68,9 +53,6 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
-tests/unit/result/pytest/results.xml
-tests/unit/coverage
-junit.xml
 
 # Translations
 *.mo
@@ -122,6 +104,8 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 
+# Environments
+.env
 .venv
 env/
 venv/
@@ -146,15 +130,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-SWEETVIZ_REPORT.html
-
-
-*.csv
-*.xlsx
-*.html
-*.png
-*.parquet
-
-tests/regressive_test_output.ipynb
-tests/secrets/*

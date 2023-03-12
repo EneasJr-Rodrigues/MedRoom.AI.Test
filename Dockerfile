@@ -3,7 +3,6 @@ FROM $base_image
 
 ARG config_path
 
-
 LABEL maintainer="eneas.rodrigues25@gmail.com"
 
 USER $root

@@ -5,6 +5,7 @@ import unicodedata
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
+nltk.download('punkt')
 from med.room.utils import logger
 import pandas as pd
 
