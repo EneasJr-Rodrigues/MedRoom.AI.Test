@@ -7,7 +7,12 @@ jobs:
       - checkout # checkout source code to working directory
       - run:
           command: | # create whl and use pipenv to install dependencies
-            python3 setup.py sdist bdist_wheel
+            pip config list -v
+            pip install --upgrade pip
+            pip install -r requirements.txt
+            pip install --upgrade twine
+
+            python3 setup.py bdist_wheel
             sudo add-apt-repository universe -y
             sudo apt-get update
             sudo apt install -y python3-pip
@@ -24,7 +29,12 @@ jobs:
       - checkout # checkout source code to working directory
       - run:
           command: | # create whl, install twine and publish to Test PyPI
-            python3 setup.py sdist bdist_wheel
+            pip config list -v
+            pip install --upgrade pip
+            pip install -r requirements.txt
+            pip install --upgrade twine
+                      
+            python3 setup.py bdist_wheel
             sudo add-apt-repository universe -y
             sudo apt-get update
             sudo apt install -y python3-pip
@@ -38,7 +48,12 @@ jobs:
       - checkout # checkout source code to working directory
       - run:
           command: | # create whl, install twine and publish to PyPI
-            python3 setup.py sdist bdist_wheel
+            pip config list -v
+            pip install --upgrade pip
+            pip install -r requirements.txt
+            pip install --upgrade twine
+
+            python3 setup.py bdist_wheel
             sudo add-apt-repository universe -y
             sudo apt-get update
             sudo apt install -y python3-pip
