@@ -38,6 +38,63 @@ jobs:
           name: Run tests
           # This assumes pytest is installed via the install-package step above
           command: pytest
+      - run:
+          name: Workaround mount volumes in docker
+          command: |
+            export ENV=local
+            awk '/RUN pip install \.\/wheels\/\*/ { next }1' Dockerfile | \
+            awk '/ADD config\/local\/wheels wheels/ { next }1' | \
+            awk '/WORKDIR/ { next }1' | \
+            cat DockerFile-aux
+            cp DockerFile-aux Dockerfile
+            echo "*************"
+            awk '/working_dir/ { print "    working_dir: /home/jovyan/src"; next }1' docker-compose.yml >> docker-compose-aux.yml
+            cp docker-compose-aux.yml docker-compose.yml
+            cat docker-compose.yml
+            echo "*************"
+            rm DockerFile-aux docker-compose-aux.yml
+            echo -e "\ntwine\nholoviews==1.12.5" >> requirements.txt
+            cat requirements.txt
+            echo '' >> .env
+            echo "*************"
+            echo '' >> .env
+            ls          
+      - run:
+          name: Building Docker Container
+          command: |
+            export ENV=test
+            export JUPYTER_PORT=8086
+            export SERVICE=med_room
+            docker-compose --env-file config/local/.env build
+      # Needs testing and a place to upload docs/build/ folder
+      - run:
+          name: Building Sphinx Documentation
+          command: |
+            export SERVICE=med_room
+            docker-compose --env-file config/local/.env run --rm -w docs/ make html
+      - run:
+          name: Tests
+          command: |
+            set -e
+            export ENV=test
+            export JUPYTER_PORT=8086
+            mkdir coverage
+            touch coverage/coverage_docker.xml
+            # docker-compose --env-file config/test/.env run --rm med_room tests --cov-report term:skip-covered --junitxml=junit.xml --cov=med_room tests
+            dna start && sleep 10 && docker exec -t med_room-container coverage run --branch --source=med_room -m pytest tests/ --junitxml=junit.xml && \
+            export CONTAINER_NAME=$(docker ps -a --format '{{.Names}}' | grep med_room) && \
+            # docker start $CONTAINER_NAME && \
+            docker ps -a && \
+            echo "Generating Coverage" && \
+            docker exec -ti $CONTAINER_NAME coverage xml -i && \
+            echo "Fetching Tests Artefacts from container" && \
+            docker exec -ti $CONTAINER_NAME cat junit.xml >> coverage/junit.xml && \
+            docker exec -ti $CONTAINER_NAME cat coverage.xml >> coverage/coverage_docker.xml
+            ls coverage -la
+            cat coverage/coverage_docker.xml
+            awk -v LIB=$(pwd) '/<source>/ { print "              <source>" LIB "</source>"; next}1' coverage/coverage_docker.xml >> coverage/coverage.xml
+            rm coverage/coverage_docker.xml
+            cp coverage/coverage.xml ./coverage.xml          
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
