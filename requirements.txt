@@ -6,13 +6,11 @@ PyYAML==5.1
 seaborn==0.11.1
 
 ## Text
-spacy==3.0.3
 # Datetime
 pendulum==2.0.5
 jupyterthemes>=0.20.0
 
 nltk==3.6.6
-spacy==3.0.3
 # Datetime
 pyLDAvis
 # Datetime

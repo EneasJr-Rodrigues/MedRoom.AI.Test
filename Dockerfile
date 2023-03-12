@@ -14,7 +14,6 @@ RUN apt-get install python3-dev gcc g++ -y # python setup.py install
 RUN pip config list -v
 ADD requirements.txt .
 RUN pip install -r requirements.txt
-RUN python -m spacy download pt_core_news_sm
 RUN pip install --upgrade setuptools
 RUN pip install nltk
 RUN python -c "import nltk; nltk.download('stopwords')"
