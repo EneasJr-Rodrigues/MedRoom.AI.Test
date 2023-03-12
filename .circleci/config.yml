@@ -14,7 +14,7 @@ commands:
       - run:
           name: Check pip config
           command: |
-            print(ls)
+            echo ls -lah
             pip config list -v
             mkdir /home/circleci/.pip
             pip config list -v
