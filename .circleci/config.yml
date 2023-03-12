@@ -97,14 +97,10 @@ jobs:
       - checkout
       - run_tests
 
+# Invoke jobs via workflows
+# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  test-branchs:
+  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
+    # Inside the workflow, you define the jobs you want to run.
     jobs:
-      - tests:
-          filters:
-            # ignore any commit on any branch by default
-            branches:
-              ignore: /dev|stage|main|hml\/.+/
-            # only act on version tags
-            tags:
-              ignore: /.*/
+      - tests
