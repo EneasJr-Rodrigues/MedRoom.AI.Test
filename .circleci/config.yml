@@ -5,10 +5,13 @@ orbs:
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+
 commands:
   build_test:
     docker:
       - image: cimg/python:3.11.0
+    environment:
+      ENV: config/local/.env
     steps:
       - checkout # checkout source code to working directory
       - run:
@@ -68,4 +71,4 @@ workflows:
           filters:
             branches:
               only:
-                - main
+                - develop
