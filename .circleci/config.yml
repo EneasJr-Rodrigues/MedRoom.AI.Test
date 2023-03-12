@@ -28,7 +28,7 @@ commands:
             awk '/RUN pip install \.\/wheels\/\*/ { next }1' Dockerfile | \
             awk '/ADD config\/local\/wheels wheels/ { next }1' | \
             awk '/WORKDIR/ { next }1' | \
-            cat /dist/*.whl
+            cat /dist/*
             cat DockerFile
             cp DockerFile
             echo "*************"
