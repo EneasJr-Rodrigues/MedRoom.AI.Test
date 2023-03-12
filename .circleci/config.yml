@@ -1,98 +1,29 @@
-version: 2.1
-
+version: 2
 orbs:
   python: circleci/python@0.2.1
-
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
-commands:
-  run_tests:
-    description: setup project and run tests
+jobs:
+  build:
+    docker:
+      - image: cimg/python:3.8
+    environment:
+      ENV: config/local/.env
     steps:
-      - setup_remote_docker
       - checkout
       - run:
-          name: Check pip config
+          name: "Check Environment of Project"
           command: |
-            echo ls -lah
-            pip config list -v
-            mkdir /home/circleci/.pip
-            pip config list -v
-            pip install --upgrade pip
-            pip install MedRoom.AI.Test==0.0.1
+            echo $PYPI_USERNAME
+            echo $PYPI_PASSWORD
       - run:
-          name: Workaround mount volumes in docker
-          command: |
-            export ENV=local
-            awk '/RUN pip install \.\/wheels\/\*/ { next }1' Dockerfile | \
-            awk '/ADD config\/local\/wheels wheels/ { next }1' | \
-            awk '/WORKDIR/ { next }1' | \
-            awk -v  MedRoom.AI.Test==0.0.1 > DockerFile-aux
-            cat DockerFile-aux
-            cp DockerFile-aux Dockerfile
-            echo "*************"
-            awk '/working_dir/ { print "    working_dir: /home/jovyan/src"; next }1' docker-compose.yml >> docker-compose-aux.yml
-            cp docker-compose-aux.yml docker-compose.yml
-            cat docker-compose.yml
-            echo "*************"
-            rm DockerFile-aux docker-compose-aux.yml
-            echo -e "\ntwine\nholoviews==1.12.5" >> requirements.txt
-            cat requirements.txt
-            echo '' >> .env
-            echo "*************"
-            echo '' >> .env
-            ls            
-      - run:
-          name: Building Docker Container
-          command: |
-            export ENV=test
-            export JUPYTER_PORT=8086
-            export SERVICE=med_room
-            docker-compose --env-file config/local/.env build
-      - run:
-          name: Building Sphinx Documentation
-          command: |
-            export SERVICE=med_room
-            docker-compose --env-file config/local/.env up -d
-      - run:
-          name: Tests
+          name: Publishing wheel to PyPi
           command: |
             set -e
-            export ENV=test
-            export JUPYTER_PORT=8086
-            mkdir coverage
-            touch coverage/coverage_docker.xml
-            # docker-compose --env-file config/test/.env run --rm med_room tests --cov-report term:skip-covered --junitxml=junit.xml --cov=dextra tests
-            dna start && sleep 10 && docker exec -t med_room-container coverage run --branch --source=med_room -m pytest tests/ --junitxml=junit.xml && \
-            export CONTAINER_NAME=$(docker ps -a --format '{{.Names}}' | grep med_room) && \
-            # docker start $CONTAINER_NAME && \
-            docker ps -a && \
-            echo "Generating Coverage" && \
-            docker exec -ti $CONTAINER_NAME coverage xml -i && \
-            echo "Fetching Tests Artefacts from container" && \
-            docker exec -ti $CONTAINER_NAME cat junit.xml >> coverage/junit.xml && \
-            docker exec -ti $CONTAINER_NAME cat coverage.xml >> coverage/coverage_docker.xml
-            ls coverage -la
-            cat coverage/coverage_docker.xml
-            awk -v LIB=$(pwd) '/<source>/ { print "              <source>" LIB "</source>"; next}1' coverage/coverage_docker.xml >> coverage/coverage.xml
-            rm coverage/coverage_docker.xml
-            cp coverage/coverage.xml ./coverage.xml
-jobs:
-  build-and-test: # This is the name of the job, feel free to change it to better match what you're trying to do!
-    # These next lines defines a Docker executors: https://circleci.com/docs/2.0/executor-types/
-    # You can specify an image from Dockerhub or use one of the convenience images from CircleCI's Developer Hub
-    # A list of available CircleCI Docker convenience images are available here: https://circleci.com/developer/images/image/cimg/python
-    # The executor is the environment in which the steps below will be executed - below will use a python 3.10.2 container
-    # Change the version below to your required version of python
-    docker:
-      - image: circleci/python:3.8
-    steps:
-      - run_tests
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
-workflows:
-  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run.
-    jobs:
-      - build-and-test
-      
+            mkdir /home/circleci/.pip     
+            export ENV=local
+             
+            pip config list -v
+            pip install --upgrade pip
+            pip install -r requirements.txt
+            pip install --upgrade twine
+
+            bash -c "python3 setup.py bdist_wheel && twine upload --username=$PYPI_USERNAME --password="$PYPI_PASSWORD" --repository-url https://pypi.org/project/MedRoom.AI.Test/0.0.1/ dist/* --verbose"
