@@ -27,6 +27,7 @@ commands:
             export ENV=test
             export JUPYTER_PORT=8086
             export SERVICE=med_room
+            pwd
             docker-compose --env-file config/local/.env build
       # Needs testing and a place to upload docs/build/ folder
       - run:
