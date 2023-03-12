@@ -21,8 +21,7 @@ commands:
             mkdir /home/circleci/.pip
             pip config list -v
             pip install --upgrade pip
-
-            mkdir ~/.pip
+            
             apt-get update
             apt-get install python3-dev gcc g++ -y # python setup.py inst   
             pip config list -v
