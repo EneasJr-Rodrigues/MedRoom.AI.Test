@@ -2,10 +2,11 @@ version: 2.1
 jobs:
   build_test:
     docker:
-      - image: cimg/python:3.11.0
+      - image: cimg/python:3.8
     steps:
       - checkout # checkout source code to working directory
       - run:
+          name: Build_Test With artifacts
           command: | # create whl and use pipenv to install dependencies
             pip config list -v
             pip install --upgrade pip
@@ -23,10 +24,11 @@ jobs:
             pipenv run pytest
   test_pypi_publish:
     docker:
-      - image: cimg/python:3.11.0
+      - image: cimg/python:3.8
     steps:
       - checkout # checkout source code to working directory
       - run:
+          name: Build_Test 2 With artifacts
           command: | # create whl, install twine and publish to Test PyPI
             pip config list -v
             pip install --upgrade pip
@@ -41,10 +43,11 @@ jobs:
             pipenv run twine upload --repository testpypi dist/*
   pypi_publish:
     docker:
-      - image: cimg/python:3.11.0
+      - image: cimg/python:3.8
     steps:
       - checkout # checkout source code to working directory
       - run:
+          name: Publishing artifacts
           command: | # create whl, install twine and publish to PyPI
             pip config list -v
             pip install --upgrade pip
@@ -74,4 +77,4 @@ workflows:
           filters:
             branches:
               only:
-                - main
+                - develop
