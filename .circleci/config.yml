@@ -8,6 +8,7 @@ jobs:
       - run:
           name: Build_Test With artifacts
           command: | # create whl and use pipenv to install dependencies
+           
             pip config list -v
             pip install --upgrade pip
             pip install -r requirements.txt
@@ -18,7 +19,7 @@ jobs:
             sudo apt-get update
             sudo apt install -y python3-pip
             sudo pip install pipenv
-            pipenv install dist/MedRoom.AI.Test-0.0.5-py3-none-any.whl
+            pipenv install dist/MedRoom.AI.Test-0.0.6-py3-none-any.whl
             pipenv install pytest
       # - run:
       #     command: | # Run test suite
