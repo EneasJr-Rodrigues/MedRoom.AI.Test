@@ -37,6 +37,12 @@ pip install MedRoom.AI.Test
 
 ```
 
+```shell
+* In terminal
+https://pypi.org/project/MedRoom.AI.Test/
+```
+
+
 ### Exemples of call methodos after API installed:
 
 ```shell
